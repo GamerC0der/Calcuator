@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .symbol-btn {
+            padding: 0.5rem 1rem;
+            background-color: #4a5568; 
+            color: white;
+            border-radius: 0.25rem;
+            font-size: 1.25rem; 
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .symbol-btn:hover {
+            background-color: #2d3748;
+        }
+
+        .symbol-btn:active {
+            background-color: #1a202c; 
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Calculator</h1>
+        <input type="text" id="calculator" placeholder="Type here..." class="w-72 px-4 py-2 border border-gray-300 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4">
+        <div class="flex justify-center mb-4 space-x-2">
+            <button class="symbol-btn">+</button>
+            <button class="symbol-btn">-</button>
+            <button class="symbol-btn">*</button>
+            <button class="symbol-btn">/</button>
+            <button class="symbol-btn">^</button>
+            <button class="symbol-btn">(</button>
+            <button class="symbol-btn">)</button>
+        </div>
+        <div id="result" class="text-xl text-gray-700 mt-4"></div>
+    </div>
+    <script>
+        document.querySelectorAll('.symbol-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const symbol = button.textContent;
+                const calculatorInput = document.getElementById('calculator');
+                calculatorInput.value += symbol;
+                calculatorInput.focus();
+            });
+        });
+
+        document.getElementById("calculator").addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+
+                let inputValue = document.getElementById("calculator").value;
+                console.log(inputValue);
+
+                document.getElementById("result").innerText = "Calculating...";
+                document.getElementById("calculator").value = "";
+
+                fetch(`/query?expression=${inputValue}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        document.getElementById("result").innerText = `Result: ${data.result}`;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        document.getElementById("result").innerText = "An error occurred. Please try again.";
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
