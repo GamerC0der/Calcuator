@@ -81,7 +81,7 @@
 
 <body class="is-flex is-justify-content-center is-align-items-center" style="height: 100vh;">
     <div class="has-text-centered has-background-box">
-        <h1 class="title has-text-light">Calculator</h1>
+        <h1 class="title has-text-light">Calculator Web App</h1>
         <div class="field has-addons">
             <div class="control has-icons-left is-expanded">
                 <input type="text" id="calculator" placeholder="Type here..." class="input is-medium"
@@ -119,6 +119,10 @@
 
         buttons.forEach(button => {
             button.addEventListener('click', () => {
+                calculatorInput.value = calculatorInput.value.replace(/\s+/g, '');
+
+                calculatorInput.value = calculatorInput.value.replace(/🥧/g, '');
+
                 calculatorInput.value += button.textContent;
             });
         });

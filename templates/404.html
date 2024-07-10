@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 Not Found</title>
+    <title>404 | Not Found</title>
     <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
     <style>
         body {
@@ -30,22 +30,24 @@
             color: #cccccc;
         }
         .home-btn {
-            background-color: #525252;
-            color: white;
+            background-color: #4a4a4a;
+            color: #ffffff;
             font-size: 1.25rem;
             padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s; 
         }
         .home-btn:hover {
-            background-color: #636363;
+            background-color: #5a5a5a; 
+            transform: scale(1.05); 
         }
         .home-btn:focus,
         .home-btn:active {
             outline: none;
-            box-shadow: 0 0 0 2px #ffffff;
+            box-shadow: 0 0 0 3px #ffffff; 
+            transform: scale(0.98);
         }
     </style>
 </head>

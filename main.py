@@ -73,7 +73,6 @@ def not_found(e):
 @app.route('/404')
 def custom_404():
     return render_template('404.html'), 404
-    
 @app.route('/query', methods=['GET'])
 def query():
     expression = request.args.get('calc')
