@@ -1,77 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Calculator | ➕➖✖️➗</title>
+    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
     <style>
-        .symbol-btn {
+        :root {
+            --primary-bg-color: #1a202c;
+            --primary-bg-color-hover: #2d3748;
+            --primary-bg-color-active: #4a5568;
+            --text-color: #ffffff;
+            --input-bg-color: #2d3748;
+            --input-border-color: #4a5568;
+            --box-shadow-color: rgba(255, 255, 255, 0.1);
+            --button-outline: 2px solid var(--text-color);
+        }
+
+        body {
+            background-color: var(--primary-bg-color);
+            color: var(--text-color);
+        }
+
+        .input {
+            background-color: var(--input-bg-color);
+            border: 1px solid var(--input-border-color);
+            color: var(--text-color);
+        }
+
+        .symbol-btn,
+        .send-btn {
             padding: 0.5rem 1rem;
-            background-color: #4a5568; 
-            color: white;
+            background-color: var(--primary-bg-color-hover);
+            color: var(--text-color);
             border-radius: 0.25rem;
-            font-size: 1.25rem; 
+            font-size: 1.25rem;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border: none;
+            outline: var(--button-outline);
         }
 
-        .symbol-btn:hover {
-            background-color: #2d3748;
+        .symbol-btn:hover,
+        .send-btn:hover {
+            background-color: var(--primary-bg-color-active);
+            box-shadow: 0 0 0.25rem var(--text-color);
         }
 
-        .symbol-btn:active {
-            background-color: #1a202c; 
+        .symbol-btn:active,
+        .send-btn:active {
+            background-color: var(--primary-bg-color-active);
+            box-shadow: 0 0 0.5rem var(--text-color);
+        }
+        .has-background-box {
+            background-color: var(--primary-bg-color-hover);
+            box-shadow: 0 2px 3px var(--box-shadow-color);
+            padding: 2rem;
+            border-radius: 0.5rem;
+        }
+
+        #result {
+            color: var(--text-color);
+        }
+
+        .api-info {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            font-size: 0.875rem;
+            color: #ffffff;
+            opacity: 0.7;
+        }
+
+        .api-info:hover {
+            opacity: 1;
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="text-center">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">Calculator</h1>
-        <input type="text" id="calculator" placeholder="Type here..." class="w-72 px-4 py-2 border border-gray-300 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4">
-        <div class="flex justify-center mb-4 space-x-2">
-            <button class="symbol-btn">+</button>
-            <button class="symbol-btn">-</button>
-            <button class="symbol-btn">*</button>
-            <button class="symbol-btn">/</button>
-            <button class="symbol-btn">^</button>
-            <button class="symbol-btn">(</button>
-            <button class="symbol-btn">)</button>
+
+<body class="is-flex is-justify-content-center is-align-items-center" style="height: 100vh;">
+    <div class="has-text-centered has-background-box">
+        <h1 class="title has-text-light">Calculator</h1>
+        <div class="field has-addons">
+            <div class="control has-icons-left is-expanded">
+                <input type="text" id="calculator" placeholder="Type here..." class="input is-medium"
+                    style="max-width: 18rem;">
+                <span class="icon is-left">
+                    <i class="fas fa-calculator"></i>
+                </span>
+            </div>
+            <div class="control">
+                <button id="sendButton" class="send-btn button is-medium">Send</button>
+            </div>
         </div>
-        <div id="result" class="text-xl text-gray-700 mt-4"></div>
+        <div class="buttons mb-4">
+            <button class="button symbol-btn">+</button>
+            <button class="button symbol-btn">-</button>
+            <button class="button symbol-btn">*</button>
+            <button class="button symbol-btn">/</button>
+            <button class="button symbol-btn">^</button>
+            <button class="button symbol-btn">(</button>
+            <button class="button symbol-btn">)</button>
+            <button class="button symbol-btn">pi</button>
+        </div>
+        <div id="result" class="is-size-4 mt-4"></div>
     </div>
+
+    <div class="api-info">
+        Use it via API! Try <code>/query?expression=2+2</code>
+    </div>
+
     <script>
-        document.querySelectorAll('.symbol-btn').forEach(button => {
+        const calculatorInput = document.getElementById('calculator');
+        const resultDiv = document.getElementById('result');
+        const buttons = document.querySelectorAll('.symbol-btn');
+        const sendButton = document.getElementById('sendButton');
+
+        buttons.forEach(button => {
             button.addEventListener('click', () => {
-                const symbol = button.textContent;
-                const calculatorInput = document.getElementById('calculator');
-                calculatorInput.value += symbol;
-                calculatorInput.focus();
+                calculatorInput.value += button.textContent;
             });
         });
 
-        document.getElementById("calculator").addEventListener("keyup", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
+        function calculate() {
+            fetch(`/query?calc=${encodeURIComponent(calculatorInput.value)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        resultDiv.textContent = `Error: ${data.error}`;
+                    } else {
+                        resultDiv.textContent = `Result: ${data.result}`;
+                    }
+                })
+                .catch(error => {
+                    resultDiv.textContent = `Fetch error: ${error.message}`;
+                });
+        }
 
-                let inputValue = document.getElementById("calculator").value;
-                console.log(inputValue);
-
-                document.getElementById("result").innerText = "Calculating...";
-                document.getElementById("calculator").value = "";
-
-                fetch(`/query?expression=${inputValue}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        document.getElementById("result").innerText = `Result: ${data.result}`;
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        document.getElementById("result").innerText = "An error occurred. Please try again.";
-                    });
+        calculatorInput.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                calculate();
             }
         });
+
+        sendButton.addEventListener('click', calculate);
     </script>
 </body>
+
 </html>

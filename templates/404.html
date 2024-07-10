@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found</title>
+    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a202c;
+            color: #ffffff;
+        }
+        .centered {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            color: #cccccc;
+        }
+        .home-btn {
+            background-color: #525252;
+            color: white;
+            font-size: 1.25rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .home-btn:hover {
+            background-color: #636363;
+        }
+        .home-btn:focus,
+        .home-btn:active {
+            outline: none;
+            box-shadow: 0 0 0 2px #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="centered">
+        <h1 class="title">404 Not Found</h1>
+        <p class="subtitle">The page you are looking for does not exist.</p>
+        <button class="home-btn" onclick="window.location.href='/'">Go to Home</button>
+    </div>
+</body>
+</html>
