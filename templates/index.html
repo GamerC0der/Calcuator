@@ -17,6 +17,29 @@
             --box-shadow-color: rgba(255, 255, 255, 0.1);
             --button-outline: 2px solid var(--text-color);
         }
+        .autocompleteSpan {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.5;
+            color: #999;
+            border: 1px solid #ccc;
+            margin-top: 5px; 
+        }
+        .autocompleteContainer {
+            width: 100%;
+            max-width: 18rem;
+        }
+
+        .has-background-box {
+            background-color: #f5f5f5;
+            padding: 20px;           
+            border-radius: 10px;  
+        }
+
+        .title.has-text-light {
+            color: #ffffff; 
+        }
 
         body {
             background-color: var(--primary-bg-color);
@@ -79,76 +102,71 @@
     </style>
 </head>
 
-<body class="is-flex is-justify-content-center is-align-items-center" style="height: 100vh;">
-    <div class="has-text-centered has-background-box">
-        <h1 class="title has-text-light">Calculator Web App</h1>
-        <div class="field has-addons">
-            <div class="control has-icons-left is-expanded">
-                <input type="text" id="calculator" placeholder="Type here..." class="input is-medium"
-                    style="max-width: 18rem;">
-                <span class="icon is-left">
-                    <i class="fas fa-calculator"></i>
-                </span>
+    <body class="is-flex is-justify-content-center is-align-items-center" style="height: 100vh;">
+        <div class="has-text-centered has-background-box">
+            <h1 class="title has-text-light">Calculator Web App</h1>
+            <div class="field has-addons">
+                <div class="control has-icons-left is-expanded">
+                    <input type="text" id="calculator" placeholder="Type here..." class="input is-medium" style="max-width: 18rem;">
+                    <span class="icon is-left">
+                        <i class="fas fa-calculator"></i>
+                    </span>
+         
+                </div>
+                <div class="control">
+                    <button id="sendButton" class="send-btn button is-medium">Send</button>
+                </div>
             </div>
-            <div class="control">
-                <button id="sendButton" class="send-btn button is-medium">Send</button>
+            <div class="buttons mb-4">
+                <button class="button symbol-btn">+</button>
+                <button class="button symbol-btn">-</button>
+                <button class="button symbol-btn">*</button>
+                <button class="button symbol-btn">/</button>
+                <button class="button symbol-btn">^</button>
+                <button class="button symbol-btn">(</button>
+                <button class="button symbol-btn">)</button>
+                <button class="button symbol-btn">pi</button>
+
             </div>
+            <div id="result" class="is-size-4 mt-4"></div>
         </div>
-        <div class="buttons mb-4">
-            <button class="button symbol-btn">+</button>
-            <button class="button symbol-btn">-</button>
-            <button class="button symbol-btn">*</button>
-            <button class="button symbol-btn">/</button>
-            <button class="button symbol-btn">^</button>
-            <button class="button symbol-btn">(</button>
-            <button class="button symbol-btn">)</button>
-            <button class="button symbol-btn">pi</button>
+
+        <div class="api-info">
+            Use it via API Try <code>/query?expression=2+2</code>
         </div>
-        <div id="result" class="is-size-4 mt-4"></div>
-    </div>
-
-    <div class="api-info">
-        Use it via API! Try <code>/query?expression=2+2</code>
-    </div>
-
     <script>
         const calculatorInput = document.getElementById('calculator');
+        const autocompleteSpan = document.getElementById('autocomplete');
         const resultDiv = document.getElementById('result');
         const buttons = document.querySelectorAll('.symbol-btn');
         const sendButton = document.getElementById('sendButton');
 
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                calculatorInput.value = calculatorInput.value.replace(/\s+/g, '');
 
-                calculatorInput.value = calculatorInput.value.replace(/🥧/g, '');
+        sendButton.addEventListener('click', calculate);
 
-                calculatorInput.value += button.textContent;
-            });
-        });
-
-        function calculate() {
-            fetch(`/query?calc=${encodeURIComponent(calculatorInput.value)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        resultDiv.textContent = `Error: ${data.error}`;
-                    } else {
-                        resultDiv.textContent = `Result: ${data.result}`;
-                    }
-                })
-                .catch(error => {
-                    resultDiv.textContent = `Fetch error: ${error.message}`;
-                });
-        }
-
-        calculatorInput.addEventListener('keydown', event => {
+        calculatorInput.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
+                event.preventDefault();
                 calculate();
             }
         });
 
-        sendButton.addEventListener('click', calculate);
+        function calculate() {
+            const inputText = calculatorInput.value;
+            try {
+                const result = eval(inputText);
+                resultDiv.textContent = `= ${result}`;
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        buttons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const symbol = button.textContent;
+                calculatorInput.value += symbol;
+            });
+        });
     </script>
 </body>
 
